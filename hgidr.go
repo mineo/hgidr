@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path"
 )
@@ -33,7 +33,7 @@ func (self *DataFile) read() (err error) {
 
 	if err != nil {
 		if os.IsNotExist(err) {
-			fmt.Println("The data file doesn't exist.")
+			log.Println("The data file doesn't exist.")
 			// The file does not exist - create and initialize it.
 			f, err := os.Create(self.filename)
 			f.Close()
@@ -45,7 +45,7 @@ func (self *DataFile) read() (err error) {
 	}
 
 	if len(b) == 0 {
-		fmt.Println("The data file is empty.")
+		log.Println("The data file is empty.")
 		self.initRecords()
 		return
 	}
@@ -73,7 +73,7 @@ createNewSeries creates a new `Record` for a series called `name` with the
 Season and Episode initialized to 1.
 */
 func (self *DataFile) createNewSeries(name string) {
-	fmt.Println("Creating ", name)
+	log.Println("Creating ", name)
 	newRecord := Record{Season: 1, Episode: 1}
 	self.records[name] = &newRecord
 }
@@ -112,7 +112,7 @@ stats displays information about series `name`.
 */
 func (self DataFile) stats(name string) {
 	record := self.records[name]
-	fmt.Printf("Season %d Episode %d", record.Season, record.Episode)
+	log.Printf("Season %d Episode %d", record.Season, record.Episode)
 }
 
 /*
@@ -142,6 +142,7 @@ func read_datafile() (datafile DataFile) {
 }
 
 func main() {
+	log.SetFlags(0)
 	var newSeries = flag.Bool("newseries", false, "Create a new series")
 	var episode = flag.Bool("ep", false, "Increment the episode counter of the series")
 	var season = flag.Bool("season", false, "Increment the season counter of the series")
@@ -153,7 +154,7 @@ func main() {
 	args := flag.Args()
 
 	if len(args) == 0 {
-		fmt.Println("You need to specify the name of the series")
+		log.Println("You need to specify the name of the series")
 		return
 	}
 

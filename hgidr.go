@@ -165,7 +165,10 @@ func main() {
 	if *newSeries {
 		datafile.createNewSeries(name)
 	} else {
-		record := datafile.records[name]
+		record, ok := datafile.records[name]
+		if !ok {
+			log.Fatalln(name, "is an unknown series")
+		}
 		if *episode {
 			record.incEpisode()
 		}

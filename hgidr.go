@@ -16,12 +16,12 @@ type Record struct {
 
 type DataFile struct {
 	filename        string
-	records         map[string]Record
+	records         map[string]*Record
 	defaultFileMode os.FileMode
 }
 
 func (self *DataFile) initRecords() {
-	self.records = make(map[string]Record, 0)
+	self.records = make(map[string]*Record, 0)
 }
 
 /*
@@ -75,44 +75,36 @@ Season and Episode initialized to 1.
 func (self *DataFile) createNewSeries(name string) {
 	fmt.Println("Creating ", name)
 	newRecord := Record{Season: 1, Episode: 1}
-	self.records[name] = newRecord
+	self.records[name] = &newRecord
 }
 
 /*
 incEpisode increments the last watched episode of `name`.
 */
-func (self *DataFile) incEpisode(name string) {
-	record := self.records[name]
-	record.Episode++
-	self.records[name] = record
+func (self *Record) incEpisode() {
+	self.Episode++
 }
 
 /*
 incSeason increments the season of `name`.
 */
-func (self *DataFile) incSeason(name string) {
-	record := self.records[name]
-	record.Season++
-	record.Episode = 1
-	self.records[name] = record
+func (self *Record) incSeason() {
+	self.Season++
+	self.Episode = 1
 }
 
 /*
 setEpisode sets the last watched episode of `name` to `episode`.
 */
-func (self *DataFile) setEpisode(name string, episode int) {
-	record := self.records[name]
-	record.Episode = episode
-	self.records[name] = record
+func (self *Record) setEpisode(episode int) {
+	self.Episode = episode
 }
 
 /*
 setSeason sets the season of `name` to `season`.
 */
-func (self *DataFile) setSeason(name string, season int) {
-	record := self.records[name]
-	record.Season = season
-	self.records[name] = record
+func (self *Record) setSeason(season int) {
+	self.Season = season
 }
 
 /*
@@ -171,18 +163,20 @@ func main() {
 
 	if *newSeries {
 		datafile.createNewSeries(name)
-	}
-	if *episode {
-		datafile.incEpisode(name)
-	}
-	if *season {
-		datafile.incSeason(name)
-	}
-	if *setEpisode > 0 {
-		datafile.setEpisode(name, *setEpisode)
-	}
-	if *setSeason > 0 {
-		datafile.setSeason(name, *setSeason)
+	} else {
+		record := datafile.records[name]
+		if *episode {
+			record.incEpisode()
+		}
+		if *season {
+			record.incSeason()
+		}
+		if *setEpisode > 0 {
+			record.setEpisode(*setEpisode)
+		}
+		if *setSeason > 0 {
+			record.setSeason(*setSeason)
+		}
 	}
 
 	datafile.stats(name)

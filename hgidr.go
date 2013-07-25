@@ -148,10 +148,19 @@ func main() {
 	var season = flag.Bool("season", false, "Increment the season counter of the series")
 	var setEpisode = flag.Int("set-ep", 0, "Set the episode counter of the series")
 	var setSeason = flag.Int("set-season", 0, "Set the Episode counter of the series")
+	var doList = flag.Bool("list", false, "List all known series")
 
 	flag.Parse()
 
 	args := flag.Args()
+
+	if *doList {
+		datafile := read_datafile()
+		for elem, _ := range datafile.records {
+			log.Println(elem)
+		}
+		return
+	}
 
 	if len(args) == 0 {
 		log.Println("You need to specify the name of the series")

@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"strings"
 )
 
 type Record struct {
@@ -167,7 +168,7 @@ func main() {
 		return
 	}
 
-	name := args[0]
+	name := strings.Join(args, " ")
 
 	datafile := read_datafile()
 

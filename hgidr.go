@@ -26,7 +26,7 @@ func (self *DataFile) initRecords() {
 }
 
 /*
-read reads the csv file `datafile` into `records`.
+read reads the JSON file `datafile` into `records`.
 */
 func (self *DataFile) read() (err error) {
 	os.MkdirAll(path.Dir(self.filename), 0755)
